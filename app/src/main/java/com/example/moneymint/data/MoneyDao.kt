@@ -3,6 +3,9 @@ package com.example.moneymint.data
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
+import com.example.moneymint.data.Categoria
+import com.example.moneymint.data.Gasto
+
 @Dao
 interface MoneyDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
