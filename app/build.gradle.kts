@@ -3,7 +3,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("kotlin-kapt") // <--- Usamos el ID directo sin la versión para evitar el conflicto
+    id("kotlin-kapt")
+    id("com.google.gms.google-services") // Añadimos el plugin de Google Services
 }
 
 android {
@@ -42,15 +43,23 @@ android {
 }
 
 dependencies {
-    // Usando el catálogo de versiones (libs) para Room
+    // Importamos el BOM de Firebase para gestionar versiones fácilmente
+    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    
+    // Dependencias de Firebase
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
 
-    // Para las Corrutinas (necesarias para el pre-poblado)
+    // Corrutinas
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
-    // El resto de tus librerías desde el catálogo
+    // Compose y Core
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -59,6 +68,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

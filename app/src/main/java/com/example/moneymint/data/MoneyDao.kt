@@ -14,9 +14,15 @@ interface MoneyDao {
     @Query("SELECT * FROM categorias")
     fun obtenerCategorias(): Flow<List<Categoria>>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE) // Cambiado para evitar crashes por duplicados
     suspend fun insertarGasto(gasto: Gasto)
 
-    @Query("SELECT * FROM gastos ORDER BY fecha DESC")
+    @Update
+    suspend fun actualizarGasto(gasto: Gasto)
+
+    @Delete
+    suspend fun eliminarGasto(gasto: Gasto)
+
+    @Query("SELECT * FROM transacciones ORDER BY fecha DESC")
     fun obtenerGastos(): Flow<List<Gasto>>
 }

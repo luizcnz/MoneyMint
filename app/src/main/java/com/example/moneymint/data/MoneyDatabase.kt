@@ -9,7 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Database(entities = [Gasto::class, Categoria::class], version = 1, exportSchema = false)
+@Database(entities = [Gasto::class, Categoria::class], version = 3, exportSchema = false) // Subimos a versión 3 para forzar la limpieza
 abstract class MoneyDatabase : RoomDatabase() {
 
     abstract fun moneyDao(): MoneyDao
@@ -25,7 +25,8 @@ abstract class MoneyDatabase : RoomDatabase() {
                     MoneyDatabase::class.java,
                     "money_mint_db"
                 )
-                    .addCallback(MoneyDatabaseCallback(scope)) // Aquí ocurre la magia del pre-poblado
+                    .fallbackToDestructiveMigration()
+                    .addCallback(MoneyDatabaseCallback(scope))
                     .build()
                 INSTANCE = instance
                 instance
@@ -39,11 +40,13 @@ abstract class MoneyDatabase : RoomDatabase() {
             INSTANCE?.let { database ->
                 scope.launch(Dispatchers.IO) {
                     val dao = database.moneyDao()
-                    // Insertamos categorías iniciales
+                    // Insertamos las categorías base
                     dao.insertarCategoria(Categoria(nombre = "Comida", icono = "🍔"))
                     dao.insertarCategoria(Categoria(nombre = "Transporte", icono = "🚗"))
                     dao.insertarCategoria(Categoria(nombre = "Salud", icono = "💊"))
                     dao.insertarCategoria(Categoria(nombre = "Ocio", icono = "🎮"))
+                    dao.insertarCategoria(Categoria(nombre = "Sueldo", icono = "💰"))
+                    dao.insertarCategoria(Categoria(nombre = "Otros", icono = "📦"))
                 }
             }
         }
